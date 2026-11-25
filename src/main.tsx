@@ -17,4 +17,3 @@ createRoot(document.getElementById('root')!).render(
     </MantineProvider>
   </StrictMode>,
 )
-const errorControlado: number = "texto"; console.log(errorControlado);
