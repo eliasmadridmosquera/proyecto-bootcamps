@@ -5,6 +5,7 @@ import { NOMBRES_FASE } from '../../datos-ejemplo/datos'
 import { eliminarAnomalia, listarAnomalias, listarPublicaciones, type Anomalia } from '../../servicios/mock-servidor'
 import { ModalAnomalia } from '../../componentes/modal-anomalia'
 import { useAnio } from '../../layouts/layout-analista'
+import { PanelAnalisisIA } from '../../componentes/panel-analisis-ia'
 
 /** P4 · Anomalías registradas del cálculo en curso (solo analista). */
 export function AnomaliasRegistradas() {
@@ -92,6 +93,7 @@ export function AnomaliasRegistradas() {
           </Table.Tbody>
         </Table>
       )}
+      <PanelAnalisisIA key={JSON.stringify([anio, lista.data])} anio={anio} anomalias={lista.data ?? []} />
       <ModalAnomalia abierto={modal} anio={anio} editando={editando} onCerrar={() => setModal(false)} />
     </Stack>
   )

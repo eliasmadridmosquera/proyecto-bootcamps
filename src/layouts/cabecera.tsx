@@ -3,12 +3,15 @@ import { FACULTADES } from '../datos-ejemplo/datos'
 import { useSesion, type Rol } from '../stores/seleccion-consulta-store'
 import { reiniciarDemo } from '../servicios/mock-servidor'
 
+const COMMIT = String(import.meta.env.VITE_APP_VERSION ?? 'local').slice(0, 7)
+
 export function Cabecera() {
   const { rol, facultadDecano, cambiarRol, asignarFacultad } = useSesion()
   const navigate = useNavigate()
   return (
     <header className="app-header">
       <h1>Panel Académico · costos de docencia por carrera · v1.1</h1>
+      <small>commit {COMMIT}</small>
       <label>
         Rol (demo){' '}
         <select
