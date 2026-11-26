@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   quality:
@@ -26,12 +28,17 @@ jobs:
       - name: Validar calidad con ESLint
         run: pnpm lint
 
+      - name: Ejecutar pruebas
+        run: pnpm test
+
       - name: Compilar
         run: pnpm build
+        env:
+          VITE_APP_VERSION: ${{ github.sha }}
 
       - name: Guardar artefacto dist
         uses: actions/upload-artifact@v7
         with:
-          name: dist
+          name: dist-${{ github.sha }}
           path: dist
           if-no-files-found: error
