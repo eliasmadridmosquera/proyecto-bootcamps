@@ -10,7 +10,7 @@ export function Cabecera() {
   const navigate = useNavigate()
   return (
     <header className="app-header">
-      <h1>Panel Académico · costos de docencia por carrera · v2.0<h1>
+      <h1>Panel Académico · costos de docencia por carrera · v2.0</h1>
       <small>commit {COMMIT}</small>
       <label>
         Rol (demo){' '}
