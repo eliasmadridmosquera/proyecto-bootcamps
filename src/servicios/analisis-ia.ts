@@ -3,15 +3,15 @@ import { ErrorAnalisis, simularAnalisis, validarEntrada, validarRespuesta, type 
 
 const URL_SERVICIO: string = import.meta.env.VITE_IA_API_URL ?? ''
 
-export const usaSimulador = URL_SERVICIO === ''
+export const hayServicioReal = URL_SERVICIO !== ''
 
-/** Escenarios de demostración, solo en el simulador. */
-export type Escenario = 'normal' | 'invalida' | 'caido'
+/** normal usa el servicio configurado (o el simulador si no hay URL); el resto son demostraciones locales. */
+export type Escenario = 'normal' | 'simulador' | 'invalida' | 'caido'
 
 export async function analizarAnomalias(datos: unknown, escenario: Escenario = 'normal'): Promise<Analisis> {
   const entrada = validarEntrada(datos)
 
-  if (usaSimulador) {
+  if (!hayServicioReal || escenario !== 'normal') {
     await new Promise((r) => setTimeout(r, 900))
     if (escenario === 'caido') throw new ErrorAnalisis('El servicio de análisis respondió con error (HTTP 503).')
     if (escenario === 'invalida') return validarRespuesta({ resumen: '', recomendaciones: 'sin formato' })

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Alert, Badge, Button, Group, Paper, SegmentedControl, Stack, Text, Title } from '@mantine/core'
 import { useMutation } from '@tanstack/react-query'
-import { analizarAnomalias, usaSimulador, type Escenario } from '../servicios/analisis-ia'
+import { analizarAnomalias, hayServicioReal, type Escenario } from '../servicios/analisis-ia'
 import type { Anomalia } from '../servicios/mock-servidor'
 
 const COLOR = { alta: 'red', media: 'yellow', baja: 'teal' } as const
@@ -15,19 +15,21 @@ interface Props {
 export function PanelAnalisisIA({ anio, anomalias }: Props) {
   const [escenario, setEscenario] = useState<Escenario>('normal')
   const analisis = useMutation({ mutationFn: () => analizarAnomalias({ anio, anomalias }, escenario) })
+  const conGemini = hayServicioReal && escenario === 'normal'
 
   return (
     <Paper withBorder p="md">
       <Stack gap="sm">
         <Group justify="space-between">
           <Title order={3}>Análisis con IA</Title>
-          {usaSimulador && <Badge color="gray">Simulador (sin modelo de IA real)</Badge>}
+          <Badge color={conGemini ? 'blue' : 'gray'}>
+            {conGemini ? 'Gemini en AWS Lambda' : 'Simulador (sin modelo de IA real)'}
+          </Badge>
         </Group>
         <Text c="dimmed" size="sm">
           Genera recomendaciones sobre las anomalías registradas. Son sugerencias: requieren revisión humana.
         </Text>
-        {usaSimulador && (
-          <Group gap="xs">
+        <Group gap="xs">
             <Text size="sm">Escenario de demostración:</Text>
             <SegmentedControl
               size="xs"
@@ -37,13 +39,13 @@ export function PanelAnalisisIA({ anio, anomalias }: Props) {
                 analisis.reset()
               }}
               data={[
-                { value: 'normal', label: 'Normal' },
+                { value: 'normal', label: hayServicioReal ? 'Gemini' : 'Normal' },
+                ...(hayServicioReal ? [{ value: 'simulador', label: 'Simulador' }] : []),
                 { value: 'invalida', label: 'Respuesta inválida' },
                 { value: 'caido', label: 'Servicio caído' },
               ]}
             />
-          </Group>
-        )}
+        </Group>
         <Group>
           <Button onClick={() => analisis.mutate()} loading={analisis.isPending}>
             Analizar con IA
