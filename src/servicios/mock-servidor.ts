@@ -159,7 +159,7 @@ export async function guardarAnomalia(a: Omit<Anomalia, 'fecha' | 'id'> & { id?:
     const i = e.anomalias.findIndex((x) => x.id === a.id)
     if (i >= 0) e.anomalias[i] = { ...e.anomalias[i], fase: a.fase, descripcion: a.descripcion, referencia: a.referencia }
   } else {
-    e.anomalias.push({ ...a, id: crypto.randomUUID(), fecha: hoy() })
+    e.anomalias.push({ ...a, id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`, fecha: hoy() })
   }
   guardar(e)
 }
