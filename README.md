@@ -66,7 +66,7 @@ Flujo del análisis: la pantalla **Anomalías** valida la entrada (1 a 20 anomal
 3. **Validación:** ESLint y pruebas. Si algo falla, no se compila.
 4. **Build:** `pnpm build` genera `dist/`, solo archivos estáticos, con el commit incluido.
 5. **Artifact:** `dist/` se guarda como `dist-<commit>`.
-6. **Hosting:** se descarga el artifact de la ejecución en `main` y se sube a Amazon S3 como sitio web estático (publicación manual).
+6. **Despliegue y hosting:** solo en `main`, el job `deploy` descarga ese artifact, se autentica en AWS y lo sincroniza con el bucket S3 (`aws s3 sync --delete`). Sitio: http://panel-academico-elias-madrid.s3-website-us-east-1.amazonaws.com
 7. **CDN:** el sitio de S3 no usa CDN. Además, AWS Amplify compila y publica `main` automáticamente y entrega el sitio por HTTPS mediante la CDN de AWS (CloudFront).
 
 ## Limitaciones
@@ -76,5 +76,5 @@ Flujo del análisis: la pantalla **Anomalías** valida la entrada (1 a 20 anomal
 - El selector de rol es una guardia visual, no una autenticación ni una autorización.
 - El endpoint de sitio web de S3 usa **HTTP**; para HTTPS se necesita otra capa, como CloudFront.
 - AWS Academy Learner Lab usa sesiones y credenciales temporales y puede restringir servicios o permisos.
-- La publicación en S3 es manual; el despliegue automático desde GitHub Actions no está configurado.
+- El despliegue usa credenciales temporales de AWS Academy guardadas en GitHub Secrets: caducan al cerrar la sesión del laboratorio y hay que actualizarlas. Bucket y región se definen en GitHub Variables (`S3_BUCKET`, `AWS_REGION`).
 - El archivo JavaScript supera los 500 kB; se podría dividir con carga diferida.
